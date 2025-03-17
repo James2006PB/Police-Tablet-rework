@@ -1,36 +1,107 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>Stausi Database</title>
     <meta name="description" content="Stausi-Data">
     <meta name="author" content="Stausi">
 
     <link rel="shortcut icon" type="image/png" href="assets/img/logo.png"/>
-    <link rel="stylesheet" href="assets/css/styles.css?v=1.4">
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: url('background.png') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+
+        .container {
+            width: 400px;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(8px);
+        }
+
+
+        .title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+
+        .selection {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .option {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 150px;
+            height: 150px;
+            border-radius: 15px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .option img {
+            width: 100px;
+            height: auto;
+            transition: transform 0.3s;
+        }
+
+
+        .option:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+        }
+
+        .option:hover img {
+            transform: rotate(3deg);
+        }
+
+
+        .footer {
+            position: absolute;
+            bottom: 10px;
+            right: 20px;
+            font-size: 14px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            text-align: right;
+        }
+    </style>
 </head>
-
 <body>
-    <div class="links">
-        <div class="police">
-            <a href="police/pages/employed.php">
-                <img src="assets/img/police-logo.png" alt="">
+    <div class="container">
+        <h1 class="title">Vælg din afdeling</h1>
+        <div class="selection">
+            <a href="police/pages/employed.php" class="option">
+                <img src="assets/img/police-logo.png" alt="Politi">
             </a>
-        </div>
-        <div class="police">
-            <a href="ems/pages/employed.php">
-                <img src="assets/img/ems-logo.png" alt="">
+            <a href="ems/pages/employed.php" class="option">
+                <img src="assets/img/ems-logo.png" alt="EMS">
             </a>
         </div>
     </div>
 
-    <div class="front-page-footer">
-        <h1>Provided and made alive by Stausi</h1>
-        <h1>In collaboration with Riste</h1>
-    </div>
-
-    <script src="assets/js/scripts.js"></script>
 </body>
 </html>
