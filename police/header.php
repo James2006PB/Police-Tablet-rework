@@ -140,6 +140,7 @@ function hasLicense($link, $username, $license)
                         ?>
 
                     <?php endif; ?>
+                    <li><a class="nav-link" href="/police/pages/fleet.php"><i class="fa fa-road"></i> Flådestyring</a></li>
                 </ul>
             </nav>
             <div class="login">

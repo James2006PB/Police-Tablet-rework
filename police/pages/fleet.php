@@ -191,19 +191,39 @@ foreach($fleet_categories as $key => $value) {
 }
 
 
-if (isset($_GET['user']) && isset($_GET['category_change'])) {
-    $sql = "UPDATE users SET patrol_category = ? WHERE id = ?";
+if(isset($_GET['user'])) {
+    if(isset($_GET['move'])) {
+        $sql = "UPDATE users SET patrol_category = ? WHERE id = ?";
+
+        if($stmt = mysqli_prepare($link, $sql)){
+            mysqli_stmt_bind_param($stmt, "si", $param_category, $param_id);
+
+            $param_category = $_GET['move'];
+            $param_id = $_GET['user'];
+            
+            if(mysqli_stmt_execute($stmt)) {
+                header("location: fleet.php");
+            } else{
+                echo "Something went wrong. Please try again later. <br>";
+                printf("Error message: %s\n", $link->error);
+            }
+        }
+        
+        mysqli_stmt_close($stmt);
+    }
+  if (isset($_GET['user']) && isset($_GET['patrol_id'])) {
+    $sql = "UPDATE users SET patrol_id = ? WHERE id = ?";
 
     if ($stmt = mysqli_prepare($link, $sql)) {
-        mysqli_stmt_bind_param($stmt, "si", $param_category, $param_id);
+        mysqli_stmt_bind_param($stmt, "ii", $param_patrol_id, $param_id);
 
-        $param_category = $_GET['category_change']; // updatet version af category change pga bugs
+        $param_patrol_id = $_GET['patrol_id']; 
         $param_id = $_GET['user']; 
 
         if (mysqli_stmt_execute($stmt)) {
             header("location: fleet.php");
         } else {
-            echo "Der opstod en fejl ved ændring af kategori. Prøv igen senere.<br>";
+            echo "Der opstod en fejl ved opdatering af patruljenummer. Prøv igen senere.<br>";
             printf("Fejlbesked: %s\n", $link->error);
         }
     }
