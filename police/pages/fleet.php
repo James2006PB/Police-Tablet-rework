@@ -8,6 +8,7 @@ if($_SESSION["afdeling"] == "Advokatledelse" ) {
 }
 
 $fleet_categories = [
+    'betjent' => 'Ukategoriseret',
     'betjent' => 'Almen',
     'mc' => 'Motorcykel',
     'lima' => 'Indsatsleder',
@@ -269,7 +270,7 @@ foreach($fleet_extra_permissions as $key => $value) {
 echo "<main>";
     echo "<div class='fleet-wrapper'>";
         echo "<div class='fleet-uncategorized'>";
-            echo "<h1>Ukategoriseret (" . sizeof($uncategorized) . ")</h1>";
+            echo "<h1>Uden for tjeneste (" . sizeof($uncategorized) . ")</h1>";
             echo "<div class='fleet-uncategorized-list'>";
                 foreach($uncategorized as $user) {
                     $licenses = json_decode($user['licenses'], true);
