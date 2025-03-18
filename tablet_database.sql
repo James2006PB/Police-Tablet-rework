@@ -385,3 +385,18 @@ INSERT INTO `tickets` (`id`, `emne`, `paragraf`, `sigtelse`, `ticket`, `klip`, `
 (327, 'Ordensbekendtgørelsen', 'OB. §3', 'Voldelig optræden med slagsmål', 10000, '0', 'Nej', '', '0'),
 (328, 'Ordensbekendtgørelsen', 'OB. §3', 'Upassende opførsel', 5000, '0', 'Nej', '', '0'),
 (329, 'Ordensbekendtgørelsen', 'OB. §3', 'Ulovlige samkomster', 2500, '0', 'Nej', '', '0');
+
+
+CREATE TABLE `owned_vehicles` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY, 
+  `plate` VARCHAR(12) NOT NULL, 
+  `owner` VARCHAR(60) DEFAULT NULL, 
+  `model` VARCHAR(255) DEFAULT NULL, 
+  `stored` VARCHAR(50) DEFAULT 'Parkeret', 
+  `thumbnail` TEXT DEFAULT NULL, 
+  `mdt_description` VARCHAR(255) DEFAULT NULL, 
+  `impounded` TINYINT(1) DEFAULT 0, 
+  `parked` TINYINT(1) DEFAULT 1, 
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
