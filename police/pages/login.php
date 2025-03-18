@@ -148,45 +148,156 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Login</title>
 
     <link rel="shortcut icon" type="image/png" href="../../assets/img/logo.png" />
-
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="../../assets/css/police.css?v=3.0">
+    
+    <style>
+        @font-face {
+            font-family: 'Politi';
+            src: url('../../assets/fonts/Politi-Regular.ttf');
+        }
+
+        body {
+            font-family: 'Politi', Arial, sans-serif;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(50, 50, 50, 0.7)), url('../../assets/img/background.png') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .login-container {
+            width: 400px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1); /* Samme gennemsigtighed */
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        .login-container img {
+            width: 100px;
+            margin-bottom: 20px;
+        }
+
+        .login-container h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .login-container .form-group {
+            margin-bottom: 25px; /* Justeret margin for bedre spacing */
+        }
+
+        .login-container .form-group label {
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: block;
+            color: #ddd;
+        }
+
+        .login-container .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2); /* Samme gennemsigtighed */
+            color: white;
+            font-size: 14px;
+        }
+
+        .login-container .form-group input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.3); /* Lidt lysere ved fokus */
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        }
+
+        .login-container .btn-primary {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            background: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .login-container .btn-primary:hover {
+            background: #0056b3;
+            transform: scale(1.02);
+        }
+
+        .login-container .text-center a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .login-container .text-center a:hover {
+            color: #0056b3;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            text-align: center;
+            color: #ccc;
+            font-size: 12px;
+        }
+
+        .footer p {
+            margin: 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
 </head>
 
 <body>
-    <div class="login-form">
-        <div class="wrapper">
-            <img src="../../assets/img/logo_stort.png" alt="logo">
-            <h2>Login</h2>
-            <?php echo (!empty($afdeling_err)) ? '<p class="error">Du prøver at logge på den forkerte afdeling' : ''; ?>
-            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-                <div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
-                    <label>Badge nummer</label>
-                    <input type="text" name="username" class="form-control" value="<?php echo $username; ?>">
-                    <span class="help-block"><?php echo $username_err; ?></span>
-                </div>
-                <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
-                    <label>Kodeord</label>
-                    <input type="password" name="password" class="form-control">
-                    <span class="help-block"><?php echo $password_err; ?></span>
-                </div>
-                <div class="form-group" id="submit">
-                    <input type="submit" class="btn btn-primary" value="Login">
-                </div>
-            </form>
-        </div>
+    <div class="login-container">
+        <img src="../../assets/img/logo_stort.png" alt="logo">
+        <h2>Velkommen</h2>
+        <?php echo (!empty($afdeling_err)) ? '<p class="error">Du prøver at logge på den forkerte afdeling</p>' : ''; ?>
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+            <div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
+                <label>Badge nummer</label>
+                <input type="text" name="username" class="form-control" value="<?php echo $username; ?>">
+                <span class="help-block"><?php echo $username_err; ?></span>
+            </div>
+            <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
+                <label>Kodeord</label>
+                <input type="password" name="password" class="form-control">
+                <span class="help-block"><?php echo $password_err; ?></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn btn-primary" value="Login">
+            </div>
+        </form>
         <div class="text-center mt-4">
-            <a href="../../" class="btn btn-primary">Tilbage til start</a>
+            <a href="../../">Tilbage til start</a>
         </div>
     </div>
 
-    <div class="front-page-footer">
-        <h1>Provided and made alive by Stausi</h1>
-        <h1>In collaboration with Riste</h1>
+    <div class="footer">
+        <p>Provided and made alive by Stausi</p>
+        <p>In collaboration with Riste</p>
     </div>
 </body>
-
-
 
 </html>
