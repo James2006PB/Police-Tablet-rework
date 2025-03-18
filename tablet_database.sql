@@ -14,7 +14,7 @@ CREATE TABLE `afdelinger_ems` (
 
 CREATE TABLE `dailyreport` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `dato` varchar(255) NOT NULL DEFAULT current_timestamp(),
+  `dato` datetime NOT NULL DEFAULT current_timestamp(), -- Ændret fra varchar(255) til datetime
   `username` varchar(255) NOT NULL,
   `kommentar` longtext NOT NULL,
   `titel` varchar(255) NOT NULL,
@@ -59,7 +59,7 @@ CREATE TABLE `population` (
 
 CREATE TABLE `population_cases` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `dato` varchar(255) NOT NULL DEFAULT current_timestamp(),
+  `dato` datetime NOT NULL DEFAULT current_timestamp(), -- Ændret fra varchar(255) til datetime
   `pid` int(11) NOT NULL,
   `userid` int(11) NOT NULL,
   `username` varchar(255) NOT NULL,
@@ -89,7 +89,7 @@ CREATE TABLE `population_ems` (
 
 CREATE TABLE `population_journals` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `dato` varchar(2555) NOT NULL DEFAULT current_timestamp(),
+  `dato` datetime NOT NULL DEFAULT current_timestamp(), -- Ændret fra varchar(2555) til datetime
   `pid` int(11) NOT NULL,
   `userid` int(11) NOT NULL,
   `username` varchar(255) NOT NULL,
@@ -109,7 +109,7 @@ CREATE TABLE `population_journals` (
 
 CREATE TABLE `population_psykjournals` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `dato` varchar(255) NOT NULL DEFAULT current_timestamp(),
+  `dato` datetime NOT NULL DEFAULT current_timestamp(), -- Ændret fra varchar(255) til datetime
   `pid` int(11) NOT NULL,
   `userid` int(11) NOT NULL,
   `username` varchar(255) NOT NULL,
@@ -123,7 +123,7 @@ CREATE TABLE `population_psykjournals` (
 
 CREATE TABLE `population_vehicles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `dato` date NOT NULL DEFAULT current_timestamp(),
+  `dato` datetime NOT NULL DEFAULT current_timestamp(), -- Ændret fra date til datetime
   `username` varchar(255) NOT NULL,
   `plate` varchar(255) NOT NULL,
   `reason` longtext NOT NULL,
@@ -134,7 +134,7 @@ CREATE TABLE `population_vehicles` (
 
 CREATE TABLE `population_wanted` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `dato` varchar(255) NOT NULL DEFAULT current_timestamp(),
+  `dato` datetime NOT NULL DEFAULT current_timestamp(), -- Ændret fra varchar(255) til datetime
   `username` varchar(255) NOT NULL,
   `target_id` int(11) NOT NULL,
   `sigtet` longtext NOT NULL,
@@ -175,7 +175,7 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `created_at` datetime DEFAULT current_timestamp(),
+  `created_at` datetime DEFAULT current_timestamp(), -- Ændret fra date til datetime
   `firstname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `lastname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `job` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -204,7 +204,7 @@ CREATE TABLE `users_ems` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `created_at` date NOT NULL DEFAULT current_timestamp(),
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(), -- Ændret fra date til datetime
   `firstname` varchar(255) NOT NULL,
   `lastname` varchar(255) NOT NULL,
   `job` varchar(255) NOT NULL,
@@ -224,7 +224,7 @@ CREATE TABLE `users_ems` (
 
 CREATE TABLE `wanted` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `dato` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `dato` datetime NOT NULL DEFAULT current_timestamp(), -- Ændret fra varchar(255) til datetime
   `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `target_id` int(11) DEFAULT NULL,
   `target` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -239,7 +239,7 @@ CREATE TABLE `wanted` (
 
 CREATE TABLE `wanted_vehicles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `dato` varchar(255) NOT NULL,
+  `dato` datetime NOT NULL DEFAULT current_timestamp(), -- Ændret fra varchar(255) til datetime
   `username` varchar(255) NOT NULL,
   `plate` varchar(255) NOT NULL,
   `reason` mediumtext NOT NULL,
@@ -253,18 +253,11 @@ INSERT INTO `users` (
     `patrol_id`, `patrol_category`, `patrol_task`, `patrol_user_override`, `hasGangAccess`, 
     `nickname`, `department`, `hasPdfPrivilege`
 ) VALUES (
-    '00', '$2b$12$F68Hb9FLmQ1PZjxgMc6P2etoggne3BtDDMU20v.jDJXWW0kVQn6dS', 'John', 'Doe', 'Worker', 'Admin', 'General', 
+    '00', '$2y$10$3LtuhKbkqsAa0g5tT3rR9.j5FY4uYaMtClntXUlFGlUN06KFWr1Oi', 'John', 'Doe', 'Worker', 'Admin', 'General', 
     '', 1, NULL, 0, 0, NULL, 
     NULL, NULL, '', 0, 0, 
     '', 'none', 0
 );
-
-
-
-
-
-
-
 
 INSERT INTO `afdelinger` (`afdelingID`, `afdeling`, `order_number`) VALUES
 (1, 'Patruljeafdeling', 1),
@@ -281,9 +274,6 @@ INSERT INTO `afdelinger` (`afdelingID`, `afdeling`, `order_number`) VALUES
 (35, 'Dommer', 7),
 (36, 'Advokatledelse', 6);
 
-
-
-
 INSERT INTO `afdelinger_ems` (`afdelingID`, `afdeling`, `order_number`) VALUES
 (1, 'Akutafdeling', 1),
 (2, 'Traumecenter', 2),
@@ -297,15 +287,11 @@ INSERT INTO `afdelinger_ems` (`afdelingID`, `afdeling`, `order_number`) VALUES
 (10, 'Katastrofeberedskab', 10),
 (11, 'Ressourceforvaltning', 11);
 
-
-
 INSERT INTO `punishment` (`id`, `ticketemne`, `order_number`, `hasPrison`, `hasVehicle`, `hasStoffer`) VALUES
 (13, 'Færdselsloven', 1, 0, 0, 1),
 (14, 'Straffeloven', 0, 1, 0, 0),
 (15, 'Våben & kniv loven', 0, 1, 0, 0),
 (16, 'Ordensbekendtgørelsen', 0, 0, 0, 0);
-
-
 
 INSERT INTO `tickets` (`id`, `emne`, `paragraf`, `sigtelse`, `ticket`, `klip`, `frakendelse`, `information`, `prison`) VALUES
 (239, 'Færdselsloven', 'FL. §4, stk. 1', 'Kørsel frem mod rødt lyssignal', 2500, '1', 'Nej', '', '0'),
