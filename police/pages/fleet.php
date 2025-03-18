@@ -8,7 +8,6 @@ if($_SESSION["afdeling"] == "Advokatledelse" ) {
 }
 
 $fleet_categories = [
-    'betjent' => 'Ukategoriseret',
     'betjent' => 'Almen',
     'mc' => 'Motorcykel',
     'lima' => 'Indsatsleder',
@@ -91,6 +90,26 @@ if(isset($_GET['user'])) {
             mysqli_stmt_bind_param($stmt, "si", $param_comment, $param_id);
 
             $param_comment = $task;
+            $param_id = $_GET['user'];
+            
+            if(mysqli_stmt_execute($stmt)) {
+                header("location: fleet.php");
+            } else{
+                echo "Something went wrong. Please try again later. <br>";
+                printf("Error message: %s\n", $link->error);
+            }
+        }
+        
+        mysqli_stmt_close($stmt);
+    }
+
+    if(isset($_GET['patrol_id'])) {
+        $sql = "UPDATE users SET patrol_id = ? WHERE id = ?";
+
+        if($stmt = mysqli_prepare($link, $sql)){
+            mysqli_stmt_bind_param($stmt, "ii", $param_patrol_id, $param_id);
+
+            $param_patrol_id = $_GET['patrol_id'];
             $param_id = $_GET['user'];
             
             if(mysqli_stmt_execute($stmt)) {
@@ -191,47 +210,6 @@ foreach($fleet_categories as $key => $value) {
     $categorized[$license_emne] = array();
 }
 
-
-if(isset($_GET['user'])) {
-    if(isset($_GET['move'])) {
-        $sql = "UPDATE users SET patrol_category = ? WHERE id = ?";
-
-        if($stmt = mysqli_prepare($link, $sql)){
-            mysqli_stmt_bind_param($stmt, "si", $param_category, $param_id);
-
-            $param_category = $_GET['move'];
-            $param_id = $_GET['user'];
-            
-            if(mysqli_stmt_execute($stmt)) {
-                header("location: fleet.php");
-            } else{
-                echo "Something went wrong. Please try again later. <br>";
-                printf("Error message: %s\n", $link->error);
-            }
-        }
-        
-        mysqli_stmt_close($stmt);
-    }
-  if (isset($_GET['user']) && isset($_GET['patrol_id'])) {
-    $sql = "UPDATE users SET patrol_id = ? WHERE id = ?";
-
-    if ($stmt = mysqli_prepare($link, $sql)) {
-        mysqli_stmt_bind_param($stmt, "ii", $param_patrol_id, $param_id);
-
-        $param_patrol_id = $_GET['patrol_id']; 
-        $param_id = $_GET['user']; 
-
-        if (mysqli_stmt_execute($stmt)) {
-            header("location: fleet.php");
-        } else {
-            echo "Der opstod en fejl ved opdatering af patruljenummer. Prøv igen senere.<br>";
-            printf("Fejlbesked: %s\n", $link->error);
-        }
-    }
-
-    mysqli_stmt_close($stmt);
-}
-
 $uncategorized = array();
 foreach($users as $user) {
     $patrol_category = $user['patrol_category'];
@@ -270,13 +248,13 @@ foreach($fleet_extra_permissions as $key => $value) {
 echo "<main>";
     echo "<div class='fleet-wrapper'>";
         echo "<div class='fleet-uncategorized'>";
-            echo "<h1>Uden for tjeneste (" . sizeof($uncategorized) . ")</h1>";
-            echo "<div class='fleet-uncategorized-list'>";
+            echo "<h1>Ukategoriseret (" . sizeof($uncategorized) . ")</h1>";
+            echo "<div class='fleet-uncategorized-list' id='uncategorized-list'>";
                 foreach($uncategorized as $user) {
                     $licenses = json_decode($user['licenses'], true);
                     $formated_licenses = formatLicense($licenses, $fleet_categories, NULL, $fleet_custom_categories, $extra_permissions);
 
-                    echo "<div class='fleet-user-container'>";
+                    echo "<div class='fleet-user-container' data-user-id='" . $user['id'] . "'>";
                         echo "<div class='fleet-user-informations'>";
                             echo "<div class='fleet-user-info'>";
                                 echo '<i class="fa-solid fa-user"></i>';
@@ -298,17 +276,16 @@ echo "<main>";
                             }
                         echo "</div>";
                         echo "<div class='fleet-user-icons'>";
-                            if (hasAdminPermissions($user["id"])) {
-                                echo '<button class="hoverBtn">';
-                                    echo '<i class="fa-solid fa-list"></i>';
-                                    echo '<div class="fleet-user-icons-content">';
-                                        foreach($formated_licenses as $name => $license) {
-                                            echo "<a href='fleet.php?user=" . $user['id'] . "&move=" . $name . "'>" . $license . "</a>";
-                                        }
-                                    echo '</div>';
-                                echo '</button>';
-                                echo '<button onclick="addCustomPlayerTask(' . $user['id'] . ')"><i class="fa-solid fa-pen-to-square"></i></button>';
-                            }
+                            echo '<button class="hoverBtn">';
+                                echo '<i class="fa-solid fa-list"></i>';
+                                echo '<div class="fleet-user-icons-content">';
+                                    foreach($formated_licenses as $name => $license) {
+                                        echo "<a href='fleet.php?user=" . $user['id'] . "&move=" . $name . "'>" . $license . "</a>";
+                                    }
+                                echo '</div>';
+                            echo '</button>';
+                            echo '<button onclick="addCustomPlayerTask(' . $user['id'] . ')"><i class="fa-solid fa-pen-to-square"></i></button>';
+                            echo '<button onclick="setPatrolId(' . $user['id'] . ')"><i class="fa-solid fa-car"></i></button>';
                         echo "</div>";
                     echo "</div>";
                 }
@@ -321,12 +298,12 @@ echo "<main>";
 
                 echo "<div class='fleet-category' id='" . $key . "'>";
                     echo "<h1>" . $category_label . " (" . sizeof($category_users) . ")</h1>";
-                    echo "<div class='fleet-categorized-list'>";
+                    echo "<div class='fleet-categorized-list' id='" . $key . "-list'>";
                         foreach($category_users as $user) {
                             $licenses = json_decode($user['licenses'], true);
                             $formated_licenses = formatLicense($licenses, $fleet_categories, $key, $fleet_custom_categories, $extra_permissions);
 
-                            echo "<div class='fleet-user-container'>";
+                            echo "<div class='fleet-user-container' data-user-id='" . $user['id'] . "'>";
                                 echo "<div class='fleet-user-informations'>";
                                     echo "<div class='fleet-user-info'>";
                                         echo '<i class="fa-solid fa-user"></i>';
@@ -348,18 +325,17 @@ echo "<main>";
                                     }
                                 echo "</div>";
                                 echo "<div class='fleet-user-icons'>";
-                                    if (hasAdminPermissions($user["id"])) {
-                                        echo '<button class="hoverBtn">';
-                                            echo '<i class="fa-solid fa-list"></i>';
-                                            echo '<div class="fleet-user-icons-content">';
-                                                foreach($formated_licenses as $name => $license) {
-                                                    echo "<a href='fleet.php?user=" . $user['id'] . "&move=" . $name . "'>" . $license . "</a>";
-                                                }
-                                            echo '</div>';
-                                        echo '</button>';
-                                        echo '<button onclick="addCustomPlayerTask(' . $user['id'] . ')"><i class="fa-solid fa-pen-to-square"></i></button>';
-                                        echo '<a href="fleet.php?user=' . $user["id"] . '&remove=true"><i class="fa-solid fa-xmark"></i></a>';
-                                    }
+                                    echo '<button class="hoverBtn">';
+                                        echo '<i class="fa-solid fa-list"></i>';
+                                        echo '<div class="fleet-user-icons-content">';
+                                            foreach($formated_licenses as $name => $license) {
+                                                echo "<a href='fleet.php?user=" . $user['id'] . "&move=" . $name . "'>" . $license . "</a>";
+                                            }
+                                        echo '</div>';
+                                    echo '</button>';
+                                    echo '<button onclick="addCustomPlayerTask(' . $user['id'] . ')"><i class="fa-solid fa-pen-to-square"></i></button>';
+                                    echo '<button onclick="setPatrolId(' . $user['id'] . ')"><i class="fa-solid fa-car"></i></button>';
+                                    echo '<a href="fleet.php?user=' . $user["id"] . '&remove=true"><i class="fa-solid fa-xmark"></i></a>';
                                 echo "</div>";
                             echo "</div>";
                         }
@@ -370,6 +346,7 @@ echo "<main>";
     echo "</div>";
 ?>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 <script type="text/javascript">
 function addCustomPlayerTask(id) {
     (async () => {
@@ -407,192 +384,69 @@ function addCustomPlayerTask(id) {
         }
     })();
 }
-</script>
 
-
-<div class="professional-form-container">
-    <style>
-        .professional-form-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            padding: 20px;
-            background: #3a3f44; 
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            max-width: 95%%;
-            margin: 0 auto;
-            font-family: 'Arial', sans-serif;
-        }
-
-        .professional-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        label {
-            font-weight: bold;
-            font-size: 1.1rem;
-            color: #fff; 
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        input[type="text"], select, input[type="number"] {
-            font-size: 1rem;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            width: 100%;
-            background-color: #2e3338; 
-            color: #fff; 
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease-in-out;
-        }
-
-        input[type="text"]:focus, select:focus, input[type="number"]:focus {
-            border-color: #4caf50; 
-            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
-            outline: none;
-        }
-
-        .btn {
-            padding: 12px 20px;
-            font-size: 1rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .btn-update {
-            background-color: #4caf50; 
-            color: white;
-        }
-
-        .btn-update:hover {
-            background-color: #45a049;
-            transform: scale(1.05);
-        }
-
-        .btn-move {
-            background-color: #007bff; 
-            color: white;
-        }
-
-        .btn-move:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
-        }
-
-        button i {
-            margin-right: 8px;
-        }
-
-        
-        .form-group > label i {
-            color: #4caf50; 
-        }
-    </style>
-
-    
-    <form method='GET' action='fleet.php' class="professional-form">
-        <div class="form-group">
-            <label for='patrol_id'>
-                <i class="fa-solid fa-car"></i> Patruljenummer
-            </label>
-            <input 
-                type='text' 
-                id='patrol_id' 
-                name='patrol_id' 
-                value='<?php echo htmlspecialchars($user['patrol_id']); ?>' 
-                placeholder="Indtast ID (bogstaver og tal)"
-                class="form-input" 
-                pattern="[A-Za-z0-9\-]+" 
-                title="Kun bogstaver, tal og bindestreger er tilladt.">
-        </div>
-        <input type='hidden' name='user' value='<?php echo $user['id']; ?>'>
-        <button type='submit' class="btn btn-update">
-            <i class="fa-solid fa-check"></i> Opdater
-        </button>
-    </form>
-
- 
-    <form method='GET' action='fleet.php' class="professional-form">
-        <div class="form-group">
-            <label for='category_change'>
-                <i class="fa-solid fa-list-alt"></i> Flyt til kategori
-            </label>
-            <select id='category_change' name='category_change' class="form-select">
-                <?php
-                foreach ($fleet_categories as $key => $category) {
-                    $selected = $key === $user['patrol_category'] ? "selected" : "";
-                    echo "<option value='" . $key . "' " . $selected . ">" . $category . "</option>";
+function setPatrolId(id) {
+    (async () => {
+        const { value: patrolId } = await Swal.fire({
+            title: 'Indtast patruljenummer',
+            input: 'text',
+            inputPlaceholder: 'Patruljenummer',
+            showCancelButton: true,
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'Du skal indtaste et patruljenummer!';
                 }
-                ?>
-            </select>
-        </div>
-        <input type='hidden' name='user' value='<?php echo $user['id']; ?>'>
-        <button type='submit' class="btn btn-move">
-            <i class="fa-solid fa-arrow-right"></i> Flyt
-        </button>
-    </form>
-</div>
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-
-    document.querySelector('.btn-update').addEventListener('click', function(e) {
-        e.preventDefault(); 
-
-        Swal.fire({
-            title: 'Bekræft Opdatering',
-            text: 'Er du sikker på, at du vil opdatere patruljenummeret?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Ja, opdater!',
-            cancelButtonText: 'Annuller',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                e.target.closest('form').submit(); 
             }
         });
+
+        if (patrolId) {
+            window.location.href = "fleet.php?user=" + id + "&patrol_id=" + patrolId;
+        }
+    })();
+}
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    const categories = <?php echo json_encode(array_keys($fleet_categories)); ?>;
+
+    categories.forEach(category => {
+        const el = document.getElementById(category + '-list');
+        if (el) {
+            new Sortable(el, {
+                group: 'fleet',
+                animation: 150,
+                onEnd: function (evt) {
+                    const userId = evt.item.getAttribute('data-user-id');
+                    const newCategory = evt.to.getAttribute('id').replace('-list', '');
+                    if (newCategory === 'uncategorized') {
+                        evt.from.appendChild(evt.item);
+                    } else {
+                        window.location.href = "fleet.php?user=" + userId + "&move=" + newCategory;
+                    }
+                }
+            });
+        }
     });
 
-
-    document.querySelector('.btn-move').addEventListener('click', function(e) {
-        e.preventDefault(); 
-
-        Swal.fire({
-            title: 'Bekræft Flytning',
-            text: 'Er du sikker på, at du vil flytte til denne kategori?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Ja, flyt!',
-            cancelButtonText: 'Annuller',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                e.target.closest('form').submit(); 
+    const uncategorizedEl = document.getElementById('uncategorized-list');
+    if (uncategorizedEl) {
+        new Sortable(uncategorizedEl, {
+            group: {
+                name: 'fleet',
+                pull: 'clone', 
+                put: false 
+            },
+            animation: 150,
+            onEnd: function (evt) {
+                const userId = evt.item.getAttribute('data-user-id');
+                const newCategory = evt.to.getAttribute('id').replace('-list', '');
+                if (newCategory !== 'uncategorized') {
+                    window.location.href = "fleet.php?user=" + userId + "&move=" + newCategory;
+                }
             }
         });
-    });
+    }
+});
 </script>
-
-
-
 
 <?php
 echo "</main>";
