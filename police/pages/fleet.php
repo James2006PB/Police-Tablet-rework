@@ -122,6 +122,26 @@ if(isset($_GET['user'])) {
         
         mysqli_stmt_close($stmt);
     }
+
+    if(isset($_GET['new_patrol_id'])) {
+        $sql = "UPDATE users SET patrol_id = ? WHERE id = ?";
+
+        if($stmt = mysqli_prepare($link, $sql)){
+            mysqli_stmt_bind_param($stmt, "ii", $param_new_patrol_id, $param_id);
+
+            $param_new_patrol_id = $_GET['new_patrol_id'];
+            $param_id = $_GET['user'];
+            
+            if(mysqli_stmt_execute($stmt)) {
+                header("location: fleet.php");
+            } else{
+                echo "Something went wrong. Please try again later. <br>";
+                printf("Error message: %s\n", $link->error);
+            }
+        }
+        
+        mysqli_stmt_close($stmt);
+    }
 }
 
 function makeKeyFriendly($string) {
