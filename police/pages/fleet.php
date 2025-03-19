@@ -278,7 +278,7 @@ echo "<main>";
                         echo "<div class='fleet-user-informations'>";
                             echo "<div class='fleet-user-info'>";
                                 echo '<i class="fa-solid fa-user"></i>';
-                                echo $user["username"] . " " . $user["firstname"] . " " . $user["lastname"] . " (" . $user['nickname'] . ")";
+                                echo $user["username"] . " " . $user["firstname"] . " " . $user["lastname"] . "";
                             echo "</div>";
 
                             if ($user["patrol_task"] != NULL && $user["patrol_task"] != "") {
@@ -327,7 +327,7 @@ echo "<main>";
                                 echo "<div class='fleet-user-informations'>";
                                     echo "<div class='fleet-user-info'>";
                                         echo '<i class="fa-solid fa-user"></i>';
-                                        echo $user["username"] . " " . $user["firstname"] . " " . $user["lastname"] . " (" . $user["nickname"] . ")";
+                                        echo $user["username"] . " " . $user["firstname"] . " " . $user["lastname"] . "";
                                     echo "</div>";
 
                                     if ($user["patrol_task"] != NULL && $user["patrol_task"] != "") {
