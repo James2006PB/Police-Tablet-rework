@@ -128,6 +128,7 @@ function hasLicense($link, $username, $license)
                                 <div class="dropdown-content" id="wantedDropdown">
                                     <a href="/police/pages/wanted_vehicles.php"><i class="fa fa-car-side"></i> Efterlyste
                                         køretøjer</a>
+                                        <a href="/police/pages/anpg.php"><i class="fa fa-map"></i> Livekort efterlyste køretøjer</a>
                                 </div>
                             </div>
                         </li>
