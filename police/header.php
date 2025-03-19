@@ -128,7 +128,7 @@ function hasLicense($link, $username, $license)
                                 <div class="dropdown-content" id="wantedDropdown">
                                     <a href="/police/pages/wanted_vehicles.php"><i class="fa fa-car-side"></i> Efterlyste
                                         køretøjer</a>
-                                        <a href="/police/pages/anpg.php"><i class="fa fa-map"></i> Livekort efterlyste køretøjer</a>
+                                  <a href="/police/pages/anpg.php"><i class="fa fa-map"></i> Livekort efterlyste køretøjer</a>
                                 </div>
                             </div>
                         </li>
@@ -141,8 +141,12 @@ function hasLicense($link, $username, $license)
                         ?>
 
                     <?php endif; ?>
-                    <li><a class="nav-link" href="/police/pages/fleet.php"><i class="fa fa-road"></i> Flådestyring</a></li>
-                    <li><a class="nav-link" href="/police/pages/sat.php"><i class="fa fa-car"></i> Køretøjsregister</a></li>
+                                       <?php if (!isset($_SESSION['afdeling']) || $_SESSION['afdeling'] != "Advokatledelse"): ?>
+                        <li><a class="nav-link" href="/police/pages/fleet.php"><i class="fa fa-road"></i>
+                                Flådestyring</a></li>
+                    <?php endif; ?>
+
+                  <li><a class="nav-link" href="/police/pages/sat.php"><i class="fa fa-car"></i> Køretøjsregister</a></li>
                 </ul>
             </nav>
             <div class="login">
