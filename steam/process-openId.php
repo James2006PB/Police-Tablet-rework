@@ -21,7 +21,7 @@ foreach ($signed as $item) {
 }
 
 $data = http_build_query($params);
-//data prep
+
 $context = stream_context_create([
     'http' => [
         'method' => 'POST',
@@ -32,7 +32,7 @@ $context = stream_context_create([
     ],
 ]);
 
-//get the data
+
 $result = file_get_contents('https://steamcommunity.com/openid/login', false, $context);
 
 if(preg_match("#is_valid\s*:\s*true#i", $result)){
@@ -45,11 +45,17 @@ if(preg_match("#is_valid\s*:\s*true#i", $result)){
 }
 
 $response = file_get_contents('https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key='.STEAM_API_KEY.'&steamids='.$steamID64);
-$response = json_decode($response,true);
+$response = json_decode($response, true);
 
-$userData = $response['response']['players'][0];
-$steamHex = dechex($userData['steamid']);
-$steamHex = 'steam:' . $steamHex;
+if (isset($response['response']['players'][0])) {
+    $userData = $response['response']['players'][0];
+    $steamHex = 'steam:' . dechex($steamID64);
 
-header("Location: /police/pages/profile.php?steamid=" . $steamHex); 
-exit();
+    $_SESSION["steam_id"] = $steamHex;
+
+    header("Location: /police/pages/profile.php?steamid=" . $steamHex);
+    exit();
+} else {
+    echo 'Error: Unable to retrieve Steam user data.';
+    exit();
+}

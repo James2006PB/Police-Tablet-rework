@@ -48,22 +48,23 @@ if(isset($_GET['user'])) {
     }
 }
 
-if(isset($_GET['steamid'])) {
+if (isset($_GET['steamid'])) {
     $sql = "UPDATE users SET steamid = ? WHERE id = ?";
-    if($stmt = mysqli_prepare($link, $sql)){
+    if ($stmt = mysqli_prepare($link, $sql)) {
         mysqli_stmt_bind_param($stmt, "si", $param_steamid, $param_id);
-    
+
         $param_steamid = $_GET['steamid'];
         $param_id = $_SESSION["id"];
-        
-        if(mysqli_stmt_execute($stmt)) {
-            header("location: profile.php");
+
+        if (mysqli_stmt_execute($stmt)) {
+            $_SESSION["steam_id"] = $param_steamid; // Update session
+            header("location: profile.php?action=steam");
         } else {
-            echo "Something went wrong. Please try again later. <br>";
+            echo "Error: Unable to update Steam ID. <br>";
             printf("Error message: %s\n", $link->error);
         }
-
-        $_SESSION["steam_id"] = $_GET['steamid'];
+    } else {
+        echo "Error: Unable to prepare the SQL statement.";
     }
 }
 

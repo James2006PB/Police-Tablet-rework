@@ -3,7 +3,7 @@
 $login_url_params = [
     'openid.ns'         => 'http://specs.openid.net/auth/2.0',
     'openid.mode'       => 'checkid_setup',
-    'openid.return_to'  => 'localhost/steam/process-openId.php',
+    'openid.return_to'  => 'https://' . $_SERVER['HTTP_HOST'] . '/steam/process-openId.php',
     'openid.realm'      => 'https://' . $_SERVER['HTTP_HOST'],
     'openid.identity'   => 'http://specs.openid.net/auth/2.0/identifier_select',
     'openid.claimed_id' => 'http://specs.openid.net/auth/2.0/identifier_select',
